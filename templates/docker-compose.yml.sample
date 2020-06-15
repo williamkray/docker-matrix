@@ -16,7 +16,7 @@ services:
       - "--entrypoints.websecure.address=:443"
       - "--entrypoints.matrixfederation.address=:8448"
       - "--certificatesresolvers.le.acme.email=REPLACE_WITH_ACME_EMAIL"
-      - "--certificatesresolvers.le.acme.storage=/etc/traefik/acme.json"
+      - "--certificatesresolvers.le.acme.storage=/letsencrypt/acme.json"
       - "--certificatesresolvers.le.acme.httpchallenge.entrypoint=web"
       - "--accesslog"
     ports:
@@ -26,7 +26,7 @@ services:
       - 8448:8448
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./storage/traefik/config/acme.json:/etc/traefik/acme.json
+      - ./storage/traefik/config/acme.json:/letsencrypt/acme.json
     labels:
       - "traefik.enable=true"
       - "traefik.http.middlewares.tlsredirect.redirectscheme.scheme=https"
