@@ -5,3 +5,4 @@ MATRIX_HOST=$HOSTNAME
 RIOT_HOST=app.${HOSTNAME}
 ACME_EMAIL=admin@${HOSTNAME}
 POSTGRES_PW=mysupersecurepassword
+POSTGRES_ROOT_PW=mysupersecurerootpassword

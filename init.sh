@@ -35,8 +35,9 @@ cp templates/docker-compose.yml.sample docker-compose.yml
 echo "replacing acme email address"
 sed -i "s/REPLACE_WITH_ACME_EMAIL/${ACME_EMAIL}/g" docker-compose.yml
 
-echo "updating PostgreSQL password in docker-compose.yml"
-sed -i "s/REPLACE_WITH_POSTGRES_PW/${POSTGRES_PW}/g" docker-compose.yml
+echo "updating PostgreSQL password in docker-compose.yml and init script"
+sed -i "s/REPLACE_WITH_POSTGRES_PW/${POSTGRES_PW}/g" storage/postgresql/init-db.sh
+sed -i "s/REPLACE_WITH_POSTGRES_ROOT_PW/${POSTGRES_ROOT_PW}/g" docker-compose.yml
 
 echo "updating synapse docker labels in docker-compose.yml"
 sed -i "s/REPLACE_WITH_MATRIX_HOST/${MATRIX_HOST}/g" docker-compose.yml
