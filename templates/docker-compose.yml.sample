@@ -1,0 +1,93 @@
+version: '3.5'
+
+services:
+
+  traefik:
+    image: traefik:v2.2
+    restart: always
+    networks:
+      - matrix
+    command:
+      - "--api.insecure=true"
+      - "--api.dashboard=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.matrixfederation.address=:8448"
+      - "--certificatesresolvers.le.acme.email=REPLACE_WITH_ACME_EMAIL"
+      - "--certificatesresolvers.le.acme.storage=/etc/traefik/acme.json"
+      - "--certificatesresolvers.le.acme.httpchallenge.entrypoint=web"
+      - "--accesslog"
+    ports:
+      - 80:80
+      - 443:443
+      - 8080:8080
+      - 8448:8448
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./storage/traefik/config/acme.json:/etc/traefik/acme.json
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.middlewares.tlsredirect.redirectscheme.scheme=https"
+      - "traefik.http.routers.catchall.middlewares=tlsredirect"
+      - "traefik.http.routers.catchall.entrypoints=web"
+      - "traefik.http.routers.catchall.rule=hostregexp(`{host:.+}`)"
+
+  synapse:
+    image: matrixdotorg/synapse:v1.15.0
+    restart: always
+    depends_on:
+      - postgresql
+    networks:
+      - matrix
+      - postgres
+    volumes:
+      - ./storage/synapse/data:/data
+    environment:
+      - UID=1000
+      - GID=1000
+    expose:
+      - 8008
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=matrix"
+      - "traefik.http.routers.synapse.entrypoints=websecure,matrixfederation"
+      - "traefik.http.routers.synapse.tls.certresolver=le"
+      - "traefik.http.routers.synapse.rule=PathPrefix(`/_matrix`)"
+
+  riot:
+    image: vectorim/riot-web:v1.6.4
+    networks:
+      - matrix
+    volumes:
+      - ./storage/riot/data/config.json:/app/config.json
+    expose:
+      - 80
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=matrix"
+      - "traefik.http.routers.riot.entrypoints=websecure"
+      - "traefik.http.routers.riot.tls.certresolver=le"
+      - "traefik.http.routers.riot.rule=Host(`REPLACE_WITH_RIOT_HOST`)"
+
+  postgresql:
+    image: postgresql:12.3
+    networks:
+      postgres:
+        alias: database
+    environment:
+      - POSTGRES_USER=synapse_user
+      - POSTGRES_PASSWORD=REPLACE_WITH_POSTGRESS_ROOT_PW
+      - POSTGRES_DB=synapse
+    volumes:
+      - ./storage/postgresql/data:/var/lib/postgresql/data
+      - ./storage/postgresql/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
+    expose:
+      - 5432
+
+## to-do: postgresql, synapse-admin, coturn
+
+networks:
+  postgres:
+  matrix:

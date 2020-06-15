@@ -1,0 +1,7 @@
+HOSTNAME=example.com
+
+## change these if you don't like the defaults
+MATRIX_HOST=$HOSTNAME
+RIOT_HOST=app.${HOSTNAME}
+ACME_EMAIL=admin@${HOSTNAME}
+POSTGRES_PW=mysupersecurepassword
