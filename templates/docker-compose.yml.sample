@@ -75,7 +75,8 @@ services:
     image: postgresql:12.3
     networks:
       postgres:
-        alias: database
+        aliases: 
+          - database
     environment:
       - POSTGRES_USER=synapse_user
       - POSTGRES_PASSWORD=REPLACE_WITH_POSTGRESS_ROOT_PW
