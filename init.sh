@@ -15,6 +15,9 @@ fi
 
 source host.conf
 
+echo "setting permissions on acme.json"
+chmod 600 storage/traefik/config/acme.json
+
 echo "generating initial synapse config file for $HOSTNAME"
 docker run --rm -it \
 	-v "$PWD/storage/synapse/data:/data" \
