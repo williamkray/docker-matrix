@@ -78,9 +78,7 @@ services:
         aliases: 
           - database
     environment:
-      - POSTGRES_USER=synapse_user
       - POSTGRES_PASSWORD=REPLACE_WITH_POSTGRESS_ROOT_PW
-      - POSTGRES_DB=synapse
     volumes:
       - ./storage/postgresql/data:/var/lib/postgresql/data
       - ./storage/postgresql/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
