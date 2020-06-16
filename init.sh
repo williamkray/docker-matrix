@@ -25,6 +25,7 @@ mkdir -p storage/postgresql/
 cp templates/init-db.sh storage/postgresql/init-db.sh
 
 echo "adding nginx config file"
+mkdir -p storage/nginx/
 cp templates/nginx.conf.sample storage/nginx/matrix.conf
 sed -i "s/REPLACE_WITH_MATRIX_HOST/$MATRIX_HOST/" storage/nginx/matrix.conf
 
