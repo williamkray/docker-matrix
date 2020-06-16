@@ -16,7 +16,13 @@ fi
 source host.conf
 
 echo "setting permissions on acme.json"
+mkdir -p storage/traefik/config
+touch storage/traefik/config/acme.json
 chmod 600 storage/traefik/config/acme.json
+
+echo "moving db-init script into place"
+mkdir -p storage/postgresql/
+cp templates/init-db.sh storage/postgresql/init-db.sh
 
 echo "generating initial synapse config file for $HOSTNAME"
 docker run --rm -it \
