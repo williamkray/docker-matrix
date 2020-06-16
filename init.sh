@@ -24,6 +24,11 @@ echo "moving db-init script into place"
 mkdir -p storage/postgresql/
 cp templates/init-db.sh storage/postgresql/init-db.sh
 
+echo "placing delegation file in webserver path"
+mkdir -p storage/nginx/site/.well-known/matrix/server/
+cp templates/delegation.json.sample storage/nginx/site/.well-known/matrix/server/index.json
+sed -i "s/REPLACE_WITH_MATRIX_HOST/${MATRIX_HOST}" storage/nginx/site/.well-known/matrix/server/index.json
+
 echo "generating initial synapse config file for $HOSTNAME"
 docker run --rm -it \
 	-v "$PWD/storage/synapse/data:/data" \

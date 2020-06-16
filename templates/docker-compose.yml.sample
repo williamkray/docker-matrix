@@ -34,6 +34,20 @@ services:
       - "traefik.http.routers.catchall.entrypoints=web"
       - "traefik.http.routers.catchall.rule=hostregexp(`{host:.+}`)"
 
+  webserver:
+    image: nginx:latest
+    restart: always
+    networks:
+      - matrix
+    volumes:
+      - ./storage/nginx/site:/usr/share/nginx/html
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=matrix"
+      - "traefik.http.routers.webserver.rule=Host(`REPLACE_WITH_BASE_HOST`)"
+      - "traefik.http.routers.webserver.entrypoints=websecure"
+      - "traefik.http.routers.webserver.tls.certresolver=le"
+
   synapse:
     image: matrixdotorg/synapse:v1.15.0
     restart: always
