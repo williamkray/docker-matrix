@@ -28,6 +28,10 @@ echo "placing delegation file in webserver path"
 mkdir -p storage/nginx/site/.well-known/matrix/server/
 cp templates/delegation.json.sample storage/nginx/site/.well-known/matrix/server/index.json
 sed -i "s/REPLACE_WITH_MATRIX_HOST/${MATRIX_HOST}/g" storage/nginx/site/.well-known/matrix/server/index.json
+
+echo "adding nginx config file"
+cp templates/nginx.conf.sample storage/nginx/matrix.conf
+
 echo "generating initial synapse config file for $HOSTNAME"
 docker run --rm -it \
 	-v "$PWD/storage/synapse/data:/data" \

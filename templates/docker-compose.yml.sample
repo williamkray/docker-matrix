@@ -41,6 +41,7 @@ services:
       - matrix
     volumes:
       - ./storage/nginx/site:/usr/share/nginx/html
+      - ./storage/nginx/matrix.conf:/etc/nginx/conf.d/matrix.conf
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=matrix"
