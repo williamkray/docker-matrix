@@ -55,3 +55,6 @@ sed -i "s/REPLACE_WITH_RIOT_HOST/${RIOT_HOST}/g" docker-compose.yml
 echo "modifying synapse config to use postgres instead of sqlite"
 sed -i "s/^  name: sqlite3/  name: psycopg2/" storage/synapse/data/homeserver.yaml
 sed -i "s#^    database: /data/homeserver.db#    user: synapse_user\n    password: ${POSTGRES_PW}\n    database: synapse\n    host: database\n    cp_min: 5\n    cp_max: 10#" storage/synapse/data/homeserver.yaml
+
+echo "enabling federation on synapse server"
+sed -i "s/^#allow_public_rooms_over_federation: true/allow_public_rooms_over_federation: true/" storage/synapse/data/homeserver.yaml
