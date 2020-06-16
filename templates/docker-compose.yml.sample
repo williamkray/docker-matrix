@@ -34,7 +34,7 @@ services:
       - "traefik.http.routers.catchall.entrypoints=web"
       - "traefik.http.routers.catchall.rule=hostregexp(`{host:.+}`)"
 
-  webserver:
+  nginx:
     image: nginx:latest
     restart: always
     networks:
@@ -45,9 +45,9 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=matrix"
-      - "traefik.http.routers.webserver.rule=Host(`REPLACE_WITH_HOSTNAME`)"
-      - "traefik.http.routers.webserver.entrypoints=websecure"
-      - "traefik.http.routers.webserver.tls.certresolver=le"
+      - "traefik.http.routers.nginx.rule=(Host(`REPLACE_WITH_HOSTNAME`) && PathPrefix(`/.well-known`))"
+      - "traefik.http.routers.nginx.entrypoints=websecure"
+      - "traefik.http.routers.nginx.tls.certresolver=le"
 
   synapse:
     image: matrixdotorg/synapse:v1.15.0
