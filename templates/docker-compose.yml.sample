@@ -50,7 +50,7 @@ services:
       - "traefik.http.routers.nginx.tls.certresolver=le"
       ## redirect base hostname to your site. change to REPLACE_WITH_RIOT_HOST if you want to redirect to Riot instead.
       - "traefik.http.middlewares.to-site.redirectregex.regex=^https://REPLACE_WITH_HOSTNAME/$$"
-      - "traefik.http.middlewares.to-site.redirectregex.replacement=https://REPLACE_WITH_SITE_HOST/"
+      - "traefik.http.middlewares.to-site.redirectregex.replacement=https://REPLACE_WITH_REDIRECT_HOST/"
       - "traefik.http.routers.site.middlewares=to-site"
       - "traefik.http.routers.site.rule=Host(`REPLACE_WITH_HOSTNAME`)"
       - "traefik.http.routers.site.tls.certresolver=le"
