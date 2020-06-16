@@ -9,9 +9,9 @@ server {
 #   client_max_body_size 128m;
 # }
 
-  location /.well-known/matrix/ {
-    root /var/www/;
+  location /.well-known/matrix/server {
     default_type application/json;
+    return 200 '{"m.server":"REPLACE_WITH_MATRIX_HOST:443"}';
     add_header Access-Control-Allow-Origin  *;
   }
 }

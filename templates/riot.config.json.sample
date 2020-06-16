@@ -2,7 +2,7 @@
     "default_server_config": {
         "m.homeserver": {
             "base_url": "https://REPLACE_WITH_MATRIX_HOST",
-            "server_name": "REPLACE_WITH_MATRIX_HOST"
+            "server_name": "REPLACE_WITH_HOSTNAME"
         }
     },
     "disable_custom_urls": false,
@@ -34,7 +34,7 @@
     "default_theme": "dark",
     "roomDirectory": {
         "servers": [
-            "REPLACE_WITH_MATRIX_HOST"
+            "REPLACE_WITH_HOSTNAME"
         ]
     },
     "welcomeUserId": "@riot-bot:matrix.org",

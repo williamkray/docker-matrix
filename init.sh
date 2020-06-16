@@ -24,13 +24,9 @@ echo "moving db-init script into place"
 mkdir -p storage/postgresql/
 cp templates/init-db.sh storage/postgresql/init-db.sh
 
-echo "placing delegation file in webserver path"
-mkdir -p storage/nginx/site/.well-known/matrix/
-cp templates/delegation.json.sample storage/nginx/site/.well-known/matrix/server
-sed -i "s/REPLACE_WITH_MATRIX_HOST/${MATRIX_HOST}/g" storage/nginx/site/.well-known/matrix/server
-
 echo "adding nginx config file"
 cp templates/nginx.conf.sample storage/nginx/matrix.conf
+sed -i "s/REPLACE_WITH_MATRIX_HOST/$MATRIX_HOST/" storage/nginx/matrix.conf
 
 echo "generating initial synapse config file for $HOSTNAME"
 docker run --rm -it \
@@ -63,6 +59,7 @@ cp templates/riot.config.json.sample storage/riot/data/config.json
 
 echo "updating Riot config file"
 sed -i "s/REPLACE_WITH_MATRIX_HOST/${MATRIX_HOST}/g" storage/riot/data/config.json
+sed -i "s/REPLACE_WITH_HOSTNAME/${HOSTNAME}/g" storage/riot/data/config.json
 
 echo "updating Riot docker labels in docker-compose.yml"
 sed -i "s/REPLACE_WITH_RIOT_HOST/${RIOT_HOST}/g" docker-compose.yml
