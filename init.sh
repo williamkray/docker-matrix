@@ -24,6 +24,10 @@ echo "moving db-init script into place"
 mkdir -p storage/postgresql/
 cp templates/init-db.sh storage/postgresql/init-db.sh
 
+echo "adding nginx config file"
+cp templates/nginx.conf.sample storage/nginx/matrix.conf
+sed -i "s/REPLACE_WITH_MATRIX_HOST/$MATRIX_HOST/" storage/nginx/matrix.conf
+
 echo "generating initial synapse config file for $HOSTNAME"
 docker run --rm -it \
 	-v "$PWD/storage/synapse/data:/data" \
@@ -45,8 +49,11 @@ echo "updating PostgreSQL password in docker-compose.yml and init script"
 sed -i "s/REPLACE_WITH_POSTGRES_PW/${POSTGRES_PW}/g" storage/postgresql/init-db.sh
 sed -i "s/REPLACE_WITH_POSTGRES_ROOT_PW/${POSTGRES_ROOT_PW}/g" docker-compose.yml
 
-echo "updating synapse docker labels in docker-compose.yml"
+echo "updating docker labels in docker-compose.yml"
 sed -i "s/REPLACE_WITH_MATRIX_HOST/${MATRIX_HOST}/g" docker-compose.yml
+sed -i "s/REPLACE_WITH_HOSTNAME/${HOSTNAME}/g" docker-compose.yml
+sed -i "s/REPLACE_WITH_SITE_HOST/${SITE_HOST}/g" docker-compose.yml
+sed -i "s/REPLACE_WITH_REDIRECT_HOST/${REDIRECT_HOST}/g" docker-compose.yml
 
 echo "starting with base Riot config file"
 mkdir -p storage/riot/data
@@ -54,6 +61,7 @@ cp templates/riot.config.json.sample storage/riot/data/config.json
 
 echo "updating Riot config file"
 sed -i "s/REPLACE_WITH_MATRIX_HOST/${MATRIX_HOST}/g" storage/riot/data/config.json
+sed -i "s/REPLACE_WITH_HOSTNAME/${HOSTNAME}/g" storage/riot/data/config.json
 
 echo "updating Riot docker labels in docker-compose.yml"
 sed -i "s/REPLACE_WITH_RIOT_HOST/${RIOT_HOST}/g" docker-compose.yml

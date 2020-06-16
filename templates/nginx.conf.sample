@@ -1,0 +1,15 @@
+server {
+  listen         80 default_server;
+  server_name    _;
+
+  location / {
+    default_type text/html;
+    root /usr/share/nginx/html/;
+  }
+
+  location /.well-known/matrix/server {
+    default_type application/json;
+    return 200 '{"m.server":"REPLACE_WITH_MATRIX_HOST:443"}';
+    add_header Access-Control-Allow-Origin  *;
+  }
+}
