@@ -3,6 +3,7 @@ POSTGRES_PW=mysupersecurepassword
 POSTGRES_ROOT_PW=mysupersecurerootpassword
 
 ## change these if you don't like the defaults
+SITE_HOST=www.${HOSTNAME}
 MATRIX_HOST=synapse.${HOSTNAME}
 RIOT_HOST=app.${HOSTNAME}
 ACME_EMAIL=admin@${HOSTNAME}

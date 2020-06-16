@@ -45,7 +45,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=matrix"
-      - "traefik.http.routers.nginx.rule=Host(`REPLACE_WITH_HOSTNAME`) && PathPrefix(`/.well-known`)"
+      - "traefik.http.routers.nginx.rule=(Host(`REPLACE_WITH_HOSTNAME`) && PathPrefix(`/.well-known`)) || Host(`REPLACE_WITH_SITE_HOST`)"
       - "traefik.http.routers.nginx.entrypoints=websecure"
       - "traefik.http.routers.nginx.tls.certresolver=le"
 
