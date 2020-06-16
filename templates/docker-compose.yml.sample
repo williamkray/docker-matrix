@@ -78,6 +78,7 @@ services:
       - "traefik.http.routers.synapse.entrypoints=websecure,matrixfederation"
       - "traefik.http.routers.synapse.tls.certresolver=le"
       - "traefik.http.routers.synapse.rule=Host(`REPLACE_WITH_MATRIX_HOST`)"
+      - "traefik.http.routers.synapse.priority=100"
 
   riot:
     image: vectorim/riot-web:v1.6.4
