@@ -28,7 +28,6 @@ echo "placing delegation file in webserver path"
 mkdir -p storage/nginx/site/.well-known/matrix/server/
 cp templates/delegation.json.sample storage/nginx/site/.well-known/matrix/server/index.json
 sed -i "s/REPLACE_WITH_MATRIX_HOST/${MATRIX_HOST}" storage/nginx/site/.well-known/matrix/server/index.json
-
 echo "generating initial synapse config file for $HOSTNAME"
 docker run --rm -it \
 	-v "$PWD/storage/synapse/data:/data" \
@@ -52,6 +51,7 @@ sed -i "s/REPLACE_WITH_POSTGRES_ROOT_PW/${POSTGRES_ROOT_PW}/g" docker-compose.ym
 
 echo "updating synapse docker labels in docker-compose.yml"
 sed -i "s/REPLACE_WITH_MATRIX_HOST/${MATRIX_HOST}/g" docker-compose.yml
+sed -i "s/REPLACE_WITH_HOSTNAME/${HOSTNAME}/g" docker-compose.yml
 
 echo "starting with base Riot config file"
 mkdir -p storage/riot/data
