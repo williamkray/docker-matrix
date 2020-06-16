@@ -27,7 +27,7 @@ cp templates/init-db.sh storage/postgresql/init-db.sh
 echo "placing delegation file in webserver path"
 mkdir -p storage/nginx/site/.well-known/matrix/
 cp templates/delegation.json.sample storage/nginx/site/.well-known/matrix/server.json
-sed -i "s/REPLACE_WITH_MATRIX_HOST/${MATRIX_HOST}/g" storage/nginx/site/.well-known/matrix/server/index.json
+sed -i "s/REPLACE_WITH_MATRIX_HOST/${MATRIX_HOST}/g" storage/nginx/site/.well-known/matrix/server
 
 echo "adding nginx config file"
 cp templates/nginx.conf.sample storage/nginx/matrix.conf
