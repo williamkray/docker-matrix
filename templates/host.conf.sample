@@ -5,6 +5,6 @@ POSTGRES_ROOT_PW=mysupersecurerootpassword
 ## change these if you don't like the defaults
 SITE_HOST=www.${HOSTNAME}
 MATRIX_HOST=synapse.${HOSTNAME}
-RIOT_HOST=app.${HOSTNAME}
-REDIRECT_HOST=${RIOT_HOST} ## set to ${SITE_HOST} if you would prefer to redirect to a static site
+ELEMENT_HOST=app.${HOSTNAME}
+REDIRECT_HOST=${ELEMENT_HOST} ## set to ${SITE_HOST} if you would prefer to redirect to a static site
 ACME_EMAIL=admin@${HOSTNAME}

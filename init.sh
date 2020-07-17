@@ -56,16 +56,16 @@ sed -i "s/REPLACE_WITH_HOSTNAME/${HOSTNAME}/g" docker-compose.yml
 sed -i "s/REPLACE_WITH_SITE_HOST/${SITE_HOST}/g" docker-compose.yml
 sed -i "s/REPLACE_WITH_REDIRECT_HOST/${REDIRECT_HOST}/g" docker-compose.yml
 
-echo "starting with base Riot config file"
-mkdir -p storage/riot/data
-cp templates/riot.config.json.sample storage/riot/data/config.json
+echo "starting with base Element config file"
+mkdir -p storage/element/data
+cp templates/element.config.json.sample storage/element/data/config.json
 
-echo "updating Riot config file"
-sed -i "s/REPLACE_WITH_MATRIX_HOST/${MATRIX_HOST}/g" storage/riot/data/config.json
-sed -i "s/REPLACE_WITH_HOSTNAME/${HOSTNAME}/g" storage/riot/data/config.json
+echo "updating Element config file"
+sed -i "s/REPLACE_WITH_MATRIX_HOST/${MATRIX_HOST}/g" storage/element/data/config.json
+sed -i "s/REPLACE_WITH_HOSTNAME/${HOSTNAME}/g" storage/element/data/config.json
 
-echo "updating Riot docker labels in docker-compose.yml"
-sed -i "s/REPLACE_WITH_RIOT_HOST/${RIOT_HOST}/g" docker-compose.yml
+echo "updating Element docker labels in docker-compose.yml"
+sed -i "s/REPLACE_WITH_ELEMENT_HOST/${ELEMENT_HOST}/g" docker-compose.yml
 
 echo "modifying synapse config to use postgres instead of sqlite"
 sed -i "s/^  name: sqlite3/  name: psycopg2/" storage/synapse/data/homeserver.yaml
