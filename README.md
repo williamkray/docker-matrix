@@ -9,20 +9,25 @@ Ensure you have created and modified a `host.conf` file to set some basic values
   * Element web interface client pre-configured for your Synapse host
   * Traefik for reverse-proxy and TLS termination
 
+DANGER! WARNING! DANGER!
+------------------------
+
+If you deploy testing servers using a domain you want to use in the future, keep in mind that Matrix considers your matrix hostname to be eternal. It is strongly recommended that you not join federated rooms with a testing server that you might change the host name of, and if you do (in order to test federation presumably) that you LEAVE THOSE ROOMS before tearing down your matrix server and losing all your work. Failure to do so may result in mismatched state of those shared rooms, which means you may never be able to log into them ever again. It's weird.
+
 To Use:
 -------
 
   1. Make some DNS records:
 
-    * an A record for yourdomain.com that points to the IP address of your server
-    * a CNAME record for app.yourdomain.com that points to yourdomain.com (for Element web client)
-    * a CNAME record for synapse.yourdomain.com that points to yourdomain.com (for the synapse matrix server)
-    * a CNAME record for www.yourdomain.com that points to yourdomain.com (optional, if you want to host a static site)
+  * an A record for yourdomain.com that points to the IP address of your server
+  * a CNAME record for app.yourdomain.com that points to yourdomain.com (for Element web client)
+  * a CNAME record for synapse.yourdomain.com that points to yourdomain.com (for the synapse matrix server)
+  * a CNAME record for www.yourdomain.com that points to yourdomain.com (optional, if you want to host a static site)
 
   2. Copy the file `templates/host.conf.sample` to the top level directory and name it `host.conf`, modify it as you see fit.
 
-    * HOSTNAME is the most important value, the rest can be left as default if you like
-    * REDIRECT_HOST determines where someone who visits `yourdomain.com` in a browser will be redirected; recommended configuration is either app.yourdomain.com to go right to the Element interface, or www.yourdomain.com to go to the static website.
+  * HOSTNAME is the most important value, the rest can be left as default if you like
+  * REDIRECT_HOST determines where someone who visits `yourdomain.com` in a browser will be redirected; recommended configuration is either app.yourdomain.com to go right to the Element interface, or www.yourdomain.com to go to the static website.
 
   3. execute the `init.sh` script to swap out values in files, generate configs, and start docker-compose. N.B. This script will overwrite any files it generates based on the contents of your host.conf!
   4. If you want to host a static site, dump the site files in the `storage/nginx/site` directory
