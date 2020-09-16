@@ -116,3 +116,5 @@ services:
 networks:
   postgres:
   matrix:
+    # explicitly name it so it works in traefik.docker.network labels
+    name: matrix
