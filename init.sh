@@ -36,7 +36,7 @@ docker run --rm -it \
 	-e SYNAPSE_REPORT_STATS=yes \
   -e UID=1000 \
   -e GID=1000 \
-	matrixdotorg/synapse:latest generate
+	matrixdotorg/synapse:v1.20.1 generate
 
 echo "config file generated in ./storage/synapse/data/homeserver.yaml"
 
