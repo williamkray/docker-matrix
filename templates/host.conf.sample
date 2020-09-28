@@ -1,3 +1,9 @@
+## container versions
+SYNAPSE_VERSION_TAG=v1.20.1
+ELEMENT_VERSION_TAG=v1.7.7
+POSTGRES_VERSION_TAG=12.3
+
+## the important bits
 HOSTNAME=example.com
 POSTGRES_PW=mysupersecurepassword
 POSTGRES_ROOT_PW=mysupersecurerootpassword

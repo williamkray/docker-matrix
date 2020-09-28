@@ -36,12 +36,17 @@ docker run --rm -it \
 	-e SYNAPSE_REPORT_STATS=yes \
   -e UID=1000 \
   -e GID=1000 \
-	matrixdotorg/synapse:v1.20.1 generate
+	matrixdotorg/synapse:${SYNAPSE_VERSION_TAG} generate
 
 echo "config file generated in ./storage/synapse/data/homeserver.yaml"
 
 echo "starting with base docker-compose file"
 cp templates/docker-compose.yml.sample docker-compose.yml
+
+echo "replacing container version tags"
+sed -i "s/REPLACE_WITH_SYNAPSE_VERSION_TAG/${SYNAPSE_VERSION_TAG}/g" docker-compose.yml
+sed -i "s/REPLACE_WITH_ELEMENT_VERSION_TAG/${ELEMENT_VERSION_TAG}/g" docker-compose.yml
+sed -i "s/REPLACE_WITH_POSTGRES_VERSION_TAG/${POSTGRES_VERSION_TAG}/g" docker-compose.yml
 
 echo "replacing acme email address"
 sed -i "s/REPLACE_WITH_ACME_EMAIL/${ACME_EMAIL}/g" docker-compose.yml

@@ -58,7 +58,7 @@ services:
       - "traefik.http.routers.site.tls.certresolver=le"
 
   synapse:
-    image: matrixdotorg/synapse:v1.20.1
+    image: matrixdotorg/synapse:REPLACE_WITH_SYNAPSE_VERSION_TAG
     restart: always
     depends_on:
       - postgresql
@@ -81,7 +81,7 @@ services:
       - "traefik.http.routers.synapse.priority=100"
 
   element:
-    image: vectorim/riot-web:v1.7.7
+    image: vectorim/riot-web:REPLACE_WITH_ELEMENT_VERSION_TAG
     restart: always
     networks:
       - matrix
@@ -97,7 +97,7 @@ services:
       - "traefik.http.routers.element.rule=Host(`REPLACE_WITH_ELEMENT_HOST`)"
 
   postgresql:
-    image: postgres:12.3
+    image: postgres:REPLACE_WITH_POSTGRES_VERSION_TAG
     restart: always
     networks:
       postgres:

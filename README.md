@@ -18,6 +18,7 @@ To Use:
 -------
 
   1. Make some DNS records:
+  **NOTE: This is not strictly required for testing scenarios, but without DNS records pointing to your stuff you will need to understand the networking components of traefik and Docker to troubleshoot. You may also want to change which Lets Encrypt endpoint you are trying to fetch certs from so you don't spam their production service and get blocked because your server cannot be reached. You're on your own for any of this stuff.**
 
   * an A record for yourdomain.com that points to the IP address of your server
   * a CNAME record for app.yourdomain.com that points to yourdomain.com (for Element web client)
