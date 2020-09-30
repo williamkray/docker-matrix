@@ -1,6 +1,6 @@
 #!/bin/bash
 
-git branch --set-upstream git@github.com:williamkray/docker-matrix.git
+git remote add upstream git@github.com:williamkray/docker-matrix.git
 
 git fetch upstream
 
