@@ -12,4 +12,10 @@ server {
     return 200 '{"m.server":"REPLACE_WITH_MATRIX_HOST:443"}';
     add_header Access-Control-Allow-Origin  *;
   }
+
+  location /.well-known/matrix/client {
+    default_type application/json;
+    return 200 '{"m.homeserver":{"base_url":"https://REPLACE_WITH_MATRIX_HOST"}}';
+    add_header Access-Control-Allow-Origin  *;
+  }
 }
