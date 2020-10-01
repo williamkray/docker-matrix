@@ -43,7 +43,7 @@ docker run --rm -it \
 echo "config file generated in ./storage/synapse/data/homeserver.yaml"
 
 echo "starting with base docker-compose file"
-cp templates/docker-compose.yml.sample /storage/docker-compose.yml
+cp templates/aws.docker-compose.yml.sample /storage/docker-compose.yml
 
 echo "replacing container version tags"
 sed -i "s/REPLACE_WITH_SYNAPSE_VERSION_TAG/${SYNAPSE_VERSION_TAG}/g" /storage/docker-compose.yml
