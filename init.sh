@@ -9,8 +9,8 @@ set -e
 ## to set these values
 
 if ! [ -f host.conf ]; then
-	echo "no host.conf file found. please create one by modifying templates/host.conf.sample"
-	exit 1
+  echo "no host.conf file found. please create one by modifying templates/host.conf.sample"
+  exit 1
 fi
 
 source host.conf
@@ -31,12 +31,12 @@ sed -i "s/REPLACE_WITH_MATRIX_HOST/$MATRIX_HOST/" storage/nginx/matrix.conf
 
 echo "generating initial synapse config file for $HOSTNAME"
 docker run --rm -it \
-	-v "$PWD/storage/synapse/data:/data" \
-	-e SYNAPSE_SERVER_NAME=$HOSTNAME \
-	-e SYNAPSE_REPORT_STATS=yes \
-  -e UID=1000 \
-  -e GID=1000 \
-	matrixdotorg/synapse:${SYNAPSE_VERSION_TAG} generate
+  -v "$PWD/storage/synapse/data:/data" \
+  -e SYNAPSE_SERVER_NAME=$HOSTNAME \
+  -e SYNAPSE_REPORT_STATS=yes \
+  -e UID=${UID} \
+  -e GID=${UID} \
+  matrixdotorg/synapse:${SYNAPSE_VERSION_TAG} generate
 
 echo "config file generated in ./storage/synapse/data/homeserver.yaml"
 

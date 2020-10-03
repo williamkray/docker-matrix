@@ -68,8 +68,8 @@ services:
     volumes:
       - ./storage/synapse/data:/data
     environment:
-      - UID=1000
-      - GID=1000
+      - UID=${UID}
+      - GID=${UID}
     expose:
       - 8008
     labels:
