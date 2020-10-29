@@ -81,7 +81,7 @@ services:
       - "traefik.http.routers.synapse.priority=100"
 
   element:
-    image: vectorim/riot-web:REPLACE_WITH_ELEMENT_VERSION_TAG
+    image: vectorim/element-web:REPLACE_WITH_ELEMENT_VERSION_TAG
     restart: always
     networks:
       - matrix
