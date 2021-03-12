@@ -43,6 +43,9 @@ echo "config file generated in ./storage/synapse/data/homeserver.yaml"
 echo "starting with base docker-compose file"
 cp templates/docker-compose.yml.sample docker-compose.yml
 
+echo "replacing UID in docker-compose"
+sed -i "s/REPLACE_WITH_UID/${UID}/g" docker-compose.yml
+
 echo "replacing container version tags"
 sed -i "s/REPLACE_WITH_SYNAPSE_VERSION_TAG/${SYNAPSE_VERSION_TAG}/g" docker-compose.yml
 sed -i "s/REPLACE_WITH_ELEMENT_VERSION_TAG/${ELEMENT_VERSION_TAG}/g" docker-compose.yml

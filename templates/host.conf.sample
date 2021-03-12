@@ -9,6 +9,7 @@ POSTGRES_PW=mysupersecurepassword
 POSTGRES_ROOT_PW=mysupersecurerootpassword
 
 ## change these if you don't like the defaults
+UID=${UID} ## uses the current running UID for the synapse container
 SITE_HOST=www.${HOSTNAME}
 MATRIX_HOST=synapse.${HOSTNAME}
 ELEMENT_HOST=app.${HOSTNAME}
