@@ -1,1 +1,3 @@
 storage/**
+host.conf
+docker-compose.yml
