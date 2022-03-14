@@ -1,6 +1,6 @@
 ## container versions
-SYNAPSE_VERSION_TAG=v1.29.0
-ELEMENT_VERSION_TAG=v1.7.22
+SYNAPSE_VERSION_TAG=v1.54.0
+ELEMENT_VERSION_TAG=v1.10.6
 POSTGRES_VERSION_TAG=12.3
 
 ## the important bits
@@ -9,7 +9,8 @@ POSTGRES_PW=mysupersecurepassword
 POSTGRES_ROOT_PW=mysupersecurerootpassword
 
 ## change these if you don't like the defaults
-UID=${UID} ## uses the current running UID for the synapse container
+#commenting out this UID line because it causes problems sometimes
+#UID=${UID} ## uses the current running UID for the synapse container
 SITE_HOST=www.${HOSTNAME}
 MATRIX_HOST=synapse.${HOSTNAME}
 ELEMENT_HOST=app.${HOSTNAME}
