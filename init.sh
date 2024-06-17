@@ -83,6 +83,6 @@ echo "enabling federation on synapse server"
 sed -i "s/^#allow_public_rooms_over_federation: true/allow_public_rooms_over_federation: true/" storage/synapse/data/homeserver.yaml
 
 echo "starting everything up..."
-docker-compose up -d
+docker compose up -d
 
 echo "done"

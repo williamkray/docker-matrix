@@ -6,4 +6,4 @@
 
 source host.conf
 
-docker-compose exec synapse register_new_matrix_user -c /data/homeserver.yaml https://$MATRIX_HOST
+docker compose exec synapse register_new_matrix_user -c /data/homeserver.yaml
