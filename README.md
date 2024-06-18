@@ -8,6 +8,7 @@ Ensure you have created and modified a `host.conf` file to set some basic values
   * Synapse server with PostgreSQL database
   * Element web interface client pre-configured for your Synapse host
   * Traefik for reverse-proxy and TLS termination
+  * Maubot for running your own bots!
 
 #### DANGER! WARNING! DANGER!
 
@@ -54,3 +55,14 @@ To Use:
      to access files or migrate your whole system to another server, you can just run `docker-compose stop` and copy
      your files over to the new system, then run `docker-compose up -d` and it'll be like nothing ever happened
      (assuming you've updated your DNS records to point to the new server).
+  8. you can uncomment the maubot section of the docker compose file to launch a maubot instance. keep in mind it will
+     require running once to generate a config file, then you should go update it appropriately (this is not automated).
+     you can then restart maubot and start adding clients to it.
+
+
+Troubleshooting:
+----------------
+
+If you are having trouble connecting to some of your containerized services from other containers (e.g. your maubot is
+not able to authenticate against your synapse instance) check your iptables rules and/or update UFW rules appropriately
+to allow incoming traffic.
