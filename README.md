@@ -35,6 +35,7 @@ To Use:
   * a CNAME record for app.yourdomain.com that points to yourdomain.com (for Element web client)
   * a CNAME record for synapse.yourdomain.com that points to yourdomain.com (for the synapse matrix server)
   * a CNAME record for www.yourdomain.com that points to yourdomain.com (optional, if you want to host a static site)
+  * a CNAME record for maubot.yourdomain.com that points to yourdomain.com (for Maubot admin interface)
 
   **NOTE: This is not strictly required for testing scenarios, but without DNS records pointing to your stuff you will need to understand the networking components of traefik and Docker to troubleshoot. You may also want to change which Lets Encrypt endpoint you are trying to fetch certs from so you don't spam their production service and get blocked because your server cannot be reached. You're on your own for any of this stuff.**
 

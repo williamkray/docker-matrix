@@ -12,7 +12,6 @@ services:
       - "--providers.docker.exposedbydefault=false"
       - "--entrypoints.web.address=:80"
       - "--entrypoints.websecure.address=:443"
-      - "--entrypoints.matrixfederation.address=:8448"
       - "--certificatesresolvers.le.acme.email=REPLACE_WITH_ACME_EMAIL"
       - "--certificatesresolvers.le.acme.storage=/letsencrypt/acme.json"
       - "--certificatesresolvers.le.acme.httpchallenge.entrypoint=web"
@@ -20,7 +19,6 @@ services:
     ports:
       - 80:80
       - 443:443
-      - 8448:8448
     expose:
       - 8080
     volumes:
@@ -108,8 +106,22 @@ services:
       - ./storage/postgresql/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
     expose:
       - 5432
-
-## to-do: synapse-admin?, coturn? jitsi?
+  
+# maubot:
+#   image: dock.mau.dev/maubot/maubot:latest
+#   restart: always
+#   volumes:
+#     - ./storage/maubot/data:/data:z
+#   networks:
+#     - matrix
+#   expose:
+#     - 29316
+#   labels:
+#     - "traefik.enable=true"
+#     - "traefik.docker.network=matrix"
+#     - "traefik.http.routers.maubot.entrypoints=websecure"
+#     - "traefik.http.routers.maubot.tls.certresolver=le"
+#     - "traefik.http.routers.maubot.rule=Host(`REPLACE_WITH_MAUBOT_HOST`)"
 
 networks:
   postgres:

@@ -75,12 +75,12 @@ sed -i "s/REPLACE_WITH_HOSTNAME/${HOSTNAME}/g" storage/element/data/config.json
 echo "updating Element docker labels in docker-compose.yml"
 sed -i "s/REPLACE_WITH_ELEMENT_HOST/${ELEMENT_HOST}/g" docker-compose.yml
 
+echo "updating maubot labels in docker-compose.yml"
+sed -i "s/REPLACE_WITH_MAUBOT_HOST/${MAUBOT_HOST}/g" docker-compose.yml
+
 echo "modifying synapse config to use postgres instead of sqlite"
 sed -i "s/^  name: sqlite3/  name: psycopg2/" storage/synapse/data/homeserver.yaml
 sed -i "s#^    database: /data/homeserver.db#    user: synapse_user\n    password: ${POSTGRES_PW}\n    database: synapse\n    host: database\n    cp_min: 5\n    cp_max: 10#" storage/synapse/data/homeserver.yaml
-
-echo "enabling federation on synapse server"
-sed -i "s/^#allow_public_rooms_over_federation: true/allow_public_rooms_over_federation: true/" storage/synapse/data/homeserver.yaml
 
 echo "starting everything up..."
 docker compose up -d

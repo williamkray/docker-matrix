@@ -13,5 +13,6 @@ POSTGRES_ROOT_PW=mysupersecurerootpassword
 SITE_HOST=www.${HOSTNAME}
 MATRIX_HOST=synapse.${HOSTNAME}
 ELEMENT_HOST=app.${HOSTNAME}
+MAUBOT_HOST=maubot.${HOSTNAME}
 REDIRECT_HOST=${ELEMENT_HOST} ## set to ${SITE_HOST} if you would prefer to redirect to a static site
 ACME_EMAIL=admin@${HOSTNAME}
