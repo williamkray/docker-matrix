@@ -1,7 +1,7 @@
 services:
 
   traefik:
-    image: traefik:v2.2
+    image: traefik:v2.10
     restart: always
     networks:
       - matrix
@@ -71,7 +71,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=matrix"
-      - "traefik.http.routers.synapse.entrypoints=websecure,matrixfederation"
+      - "traefik.http.routers.synapse.entrypoints=websecure"
       - "traefik.http.routers.synapse.tls.certresolver=le"
       - "traefik.http.routers.synapse.rule=Host(`REPLACE_WITH_MATRIX_HOST`)"
       - "traefik.http.routers.synapse.priority=100"
