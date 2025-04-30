@@ -36,9 +36,15 @@ docker run --rm -it \
   -e SYNAPSE_REPORT_STATS=yes \
   -e UID=${UID} \
   -e GID=${UID} \
-  matrixdotorg/synapse:${SYNAPSE_VERSION_TAG} generate
+  ghcr.io/element-hq/synapse:${SYNAPSE_VERSION_TAG} generate
 
 echo "config file generated in ./storage/synapse/data/homeserver.yaml"
+
+echo "generating initial maubot config file"
+docker run --rm -it \
+  -v "$PWD/storage/maubot/data:/data" \
+  dock.mau.dev/maubot/maubot:latest
+
 
 echo "starting with base docker-compose file"
 cp templates/docker-compose.yml.sample docker-compose.yml

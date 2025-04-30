@@ -1,16 +1,18 @@
 services:
 
   traefik:
-    image: traefik:v2.10
+    image: traefik:v3
     restart: always
     networks:
-      - matrix
+      - traefik
     command:
       - "--api.insecure=true"
       - "--api.dashboard=true"
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
       - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
       - "--entrypoints.websecure.address=:443"
       - "--certificatesresolvers.le.acme.email=REPLACE_WITH_ACME_EMAIL"
       - "--certificatesresolvers.le.acme.storage=/letsencrypt/acme.json"
@@ -26,22 +28,18 @@ services:
       - ./storage/traefik/config/acme.json:/letsencrypt/acme.json
     labels:
       - "traefik.enable=true"
-      - "traefik.http.middlewares.tlsredirect.redirectscheme.scheme=https"
-      - "traefik.http.routers.catchall.middlewares=tlsredirect"
-      - "traefik.http.routers.catchall.entrypoints=web"
-      - "traefik.http.routers.catchall.rule=hostregexp(`{host:.+}`)"
 
   nginx:
     image: nginx:latest
     restart: always
     networks:
-      - matrix
+      - traefik
     volumes:
       - ./storage/nginx/site:/usr/share/nginx/html
       - ./storage/nginx/matrix.conf:/etc/nginx/conf.d/matrix.conf
     labels:
       - "traefik.enable=true"
-      - "traefik.docker.network=matrix"
+      - "traefik.docker.network=traefik"
       - "traefik.http.routers.nginx.rule=(Host(`REPLACE_WITH_HOSTNAME`) && PathPrefix(`/.well-known`)) || Host(`REPLACE_WITH_SITE_HOST`)"
       - "traefik.http.routers.nginx.priority=1" #long rule, so we knock its priority down to allow synapse rule to take over
       - "traefik.http.routers.nginx.entrypoints=websecure"
@@ -54,12 +52,12 @@ services:
       - "traefik.http.routers.site.tls.certresolver=le"
 
   synapse:
-    image: matrixdotorg/synapse:REPLACE_WITH_SYNAPSE_VERSION_TAG
+    image: ghcr.io/element-hq/synapse:REPLACE_WITH_SYNAPSE_VERSION_TAG
     restart: always
     depends_on:
       - postgresql
     networks:
-      - matrix
+      - traefik
       - postgres
     volumes:
       - ./storage/synapse/data:/data
@@ -70,24 +68,24 @@ services:
       - 8008
     labels:
       - "traefik.enable=true"
-      - "traefik.docker.network=matrix"
+      - "traefik.docker.network=traefik"
       - "traefik.http.routers.synapse.entrypoints=websecure"
       - "traefik.http.routers.synapse.tls.certresolver=le"
       - "traefik.http.routers.synapse.rule=Host(`REPLACE_WITH_MATRIX_HOST`)"
       - "traefik.http.routers.synapse.priority=100"
 
   element:
-    image: vectorim/element-web:REPLACE_WITH_ELEMENT_VERSION_TAG
+    image: ghcr.io/element-hq/element-web:REPLACE_WITH_ELEMENT_VERSION_TAG
     restart: always
     networks:
-      - matrix
+      - traefik
     volumes:
       - ./storage/element/data/config.json:/app/config.json
     expose:
       - 80
     labels:
       - "traefik.enable=true"
-      - "traefik.docker.network=matrix"
+      - "traefik.docker.network=traefik"
       - "traefik.http.routers.element.entrypoints=websecure"
       - "traefik.http.routers.element.tls.certresolver=le"
       - "traefik.http.routers.element.rule=Host(`REPLACE_WITH_ELEMENT_HOST`)"
@@ -113,18 +111,18 @@ services:
 #   volumes:
 #     - ./storage/maubot/data:/data:z
 #   networks:
-#     - matrix
+#     - traefik
 #   expose:
 #     - 29316
 #   labels:
 #     - "traefik.enable=true"
-#     - "traefik.docker.network=matrix"
+#     - "traefik.docker.network=traefik"
 #     - "traefik.http.routers.maubot.entrypoints=websecure"
 #     - "traefik.http.routers.maubot.tls.certresolver=le"
 #     - "traefik.http.routers.maubot.rule=Host(`REPLACE_WITH_MAUBOT_HOST`)"
 
 networks:
   postgres:
-  matrix:
+  traefik:
     # explicitly name it so it works in traefik.docker.network labels
-    name: matrix
+    name: traefik
