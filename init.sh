@@ -42,9 +42,9 @@ echo "config file generated in ./storage/synapse/data/homeserver.yaml"
 
 echo "generating initial MAS config file"
 mkdir -p storage/mas/data
-docker run --rm -it \
+docker run --rm \
   ghcr.io/element-hq/matrix-authentication-service \
-  config generate > ./storage/mas/data/config.yaml
+  config generate > storage/mas/data/config.yaml
 
 echo "config file generated in ./storage/mas/data/config.yaml"
 
@@ -113,6 +113,6 @@ matrix_authentication_service:
 EOF
 
 echo "starting everything up..."
-docker compose up -d
+#docker compose up -d
 
 echo "done"
