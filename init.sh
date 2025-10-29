@@ -40,6 +40,14 @@ docker run --rm -it \
 
 echo "config file generated in ./storage/synapse/data/homeserver.yaml"
 
+echo "generating initial MAS config file"
+mkdir -p storage/mas/data
+docker run --rm -it \
+  ghcr.io/element-hq/matrix-authentication-service \
+  config generate > ./storage/mas/data/config.yaml
+
+echo "config file generated in ./storage/mas/data/config.yaml"
+
 echo "generating initial maubot config file"
 docker run --rm -it \
   -v "$PWD/storage/maubot/data:/data" \
@@ -54,6 +62,7 @@ sed -i "s/REPLACE_WITH_UID/${UID}/g" docker-compose.yml
 
 echo "replacing container version tags"
 sed -i "s/REPLACE_WITH_SYNAPSE_VERSION_TAG/${SYNAPSE_VERSION_TAG}/g" docker-compose.yml
+sed -i "s/REPLACE_WITH_MAS_VERSION_TAG/${MAS_VERSION_TAG}/g" docker-compose.yml
 sed -i "s/REPLACE_WITH_ELEMENT_VERSION_TAG/${ELEMENT_VERSION_TAG}/g" docker-compose.yml
 sed -i "s/REPLACE_WITH_POSTGRES_VERSION_TAG/${POSTGRES_VERSION_TAG}/g" docker-compose.yml
 
@@ -62,10 +71,12 @@ sed -i "s/REPLACE_WITH_ACME_EMAIL/${ACME_EMAIL}/g" docker-compose.yml
 
 echo "updating PostgreSQL password in docker-compose.yml and init script"
 sed -i "s/REPLACE_WITH_POSTGRES_PW/${POSTGRES_PW}/g" storage/postgresql/init-db.sh
+sed -i "s/REPLACE_WITH_POSTGRES_MAS_PW/${POSTGRES_MAS_PW}/g" storage/postgresql/init-db.sh
 sed -i "s/REPLACE_WITH_POSTGRES_ROOT_PW/${POSTGRES_ROOT_PW}/g" docker-compose.yml
 
 echo "updating docker labels in docker-compose.yml"
 sed -i "s/REPLACE_WITH_MATRIX_HOST/${MATRIX_HOST}/g" docker-compose.yml
+sed -i "s/REPLACE_WITH_MAS_HOST/${MAS_HOST}/g" docker-compose.yml
 sed -i "s/REPLACE_WITH_HOSTNAME/${HOSTNAME}/g" docker-compose.yml
 sed -i "s/REPLACE_WITH_SITE_HOST/${SITE_HOST}/g" docker-compose.yml
 sed -i "s/REPLACE_WITH_REDIRECT_HOST/${REDIRECT_HOST}/g" docker-compose.yml
@@ -87,6 +98,19 @@ sed -i "s/REPLACE_WITH_MAUBOT_HOST/${MAUBOT_HOST}/g" docker-compose.yml
 echo "modifying synapse config to use postgres instead of sqlite"
 sed -i "s/^  name: sqlite3/  name: psycopg2/" storage/synapse/data/homeserver.yaml
 sed -i "s#^    database: /data/homeserver.db#    user: synapse_user\n    password: ${POSTGRES_PW}\n    database: synapse\n    host: database\n    cp_min: 5\n    cp_max: 10#" storage/synapse/data/homeserver.yaml
+
+echo "modifying MAS config to use postgres and connect to synapse"
+sed -i "s#^  uri: postgresql://#  uri: postgresql://mas_user:${POSTGRES_MAS_PW}@database/mas#" storage/mas/data/config.yaml
+sed -i "s#^  homeserver: localhost:8008#  homeserver: ${HOSTNAME}#" storage/mas/data/config.yaml
+sed -i "s#^  endpoint: http://localhost:8008/#  endpoint: ${MATRIX_HOST}#" storage/mas/data/config.yaml
+MAS_SYNAPSE_SHARED_SECRET=$(grep '  secret: ' ./storage/mas/data/config.yaml | awk '{print $2}' | tr -d '\r')
+sed -i "s/^# vim:ft=yaml//" ./storage/synapse/data/homeserver.yaml
+cat << EOF >> ./storage/synapse/data/homeserver.yaml
+matrix_authentication_service:
+  enabled: true
+  endpoint: https://${MAS_HOST}/
+  secret: "${MAS_SYNAPSE_SHARED_SECRET}"
+EOF
 
 echo "starting everything up..."
 docker compose up -d

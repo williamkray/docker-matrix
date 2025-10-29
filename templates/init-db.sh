@@ -10,4 +10,8 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
       template=template0
       OWNER synapse_user;
     GRANT ALL PRIVILEGES ON DATABASE synapse TO synapse_user;
+    CREATE USER mas_user WITH PASSWORD 'REPLACE_WITH_POSTGRES_MAS_PW';
+    CREATE DATABASE mas
+      OWNER mas_user;
+    GRANT ALL PRIVILEGES ON DATABASE mas TO mas_user;
 EOSQL

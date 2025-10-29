@@ -51,6 +51,30 @@ services:
       - "traefik.http.routers.site.rule=Host(`REPLACE_WITH_HOSTNAME`)"
       - "traefik.http.routers.site.tls.certresolver=le"
 
+  mas:
+    image: ghcr.io/element-hq/matrix-authentication-service:REPLACE_WITH_MAS_VERSION_TAG
+    restart: always
+    expose:
+      - 8080
+    volumes:
+      - ./storage/mas/data:/data
+    networks:
+      traefik:
+        aliases:
+          - mas
+      postgres:
+    command: server
+    environment:
+      MAS_CONFIG: /data/config.yaml
+    depends_on:
+      - postgresql
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik"
+      - "traefik.http.routers.mas.entrypoints=websecure"
+      - "traefik.http.routers.mas.tls.certresolver=le"
+      - "traefik.http.routers.mas.rule=(Host(`REPLACE_WITH_MATRIX_HOST`) && PathRegexp(`^/_matrix/client/.*/(login|logout|refresh)`)) || Host(`REPLACE_WITH_MAS_HOST`)"
+
   synapse:
     image: ghcr.io/element-hq/synapse:REPLACE_WITH_SYNAPSE_VERSION_TAG
     restart: always

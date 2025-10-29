@@ -1,17 +1,20 @@
 ## container versions
 SYNAPSE_VERSION_TAG=latest
+MAS_VERSION_TAG=latest
 ELEMENT_VERSION_TAG=latest
 POSTGRES_VERSION_TAG=17
 
 ## the important bits
 HOSTNAME=example.com
 POSTGRES_PW=mysupersecurepassword
+POSTGRES_MAS_PW=myothersupersecurepassword
 POSTGRES_ROOT_PW=mysupersecurerootpassword
 
 ## change these if you don't like the defaults
 #UID=${UID} ## uses the current running UID for the synapse container
 SITE_HOST=www.${HOSTNAME}
 MATRIX_HOST=synapse.${HOSTNAME}
+MAS_HOST=mas.${HOSTNAME}
 ELEMENT_HOST=app.${HOSTNAME}
 MAUBOT_HOST=maubot.${HOSTNAME}
 REDIRECT_HOST=${ELEMENT_HOST} ## set to ${SITE_HOST} if you would prefer to redirect to a static site

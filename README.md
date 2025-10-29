@@ -35,6 +35,7 @@ To Use:
   * an A record for yourdomain.com that points to the IP address of your server
   * a CNAME record for app.yourdomain.com that points to yourdomain.com (for Element web client)
   * a CNAME record for synapse.yourdomain.com that points to yourdomain.com (for the synapse matrix server)
+  * a CNAME record for mas.yourdomain.com that points to yourdomain.com (for the Matrix Authentication Service)
   * a CNAME record for www.yourdomain.com that points to yourdomain.com (optional, if you want to host a static site)
   * a CNAME record for maubot.yourdomain.com that points to yourdomain.com (for Maubot admin interface)
 
