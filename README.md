@@ -6,6 +6,7 @@ This repo intends to make it easy to launch a Matrix server, and all the resourc
 Ensure you have created and modified a `host.conf` file to set some basic values, run the `init.sh` script, and you should end up with a reasonably stable, functional group of services:
 
   * Synapse server with PostgreSQL database
+  * Matrix Authentication Service (next-gen true OIDC auth layer)
   * Element web interface client pre-configured for your Synapse host
   * Traefik for reverse-proxy and TLS termination
   * Maubot for running your own bots!
@@ -41,7 +42,7 @@ To Use:
 
   **NOTE: This is not strictly required for testing scenarios, but without DNS records pointing to your stuff you will need to understand the networking components of traefik and Docker to troubleshoot. You may also want to change which Lets Encrypt endpoint you are trying to fetch certs from so you don't spam their production service and get blocked because your server cannot be reached. You're on your own for any of this stuff.**
 
-  2. Copy the file `templates/host.conf.sample` to the top level directory and name it `host.conf`, modify it as you see fit.
+  2. Copy or rename the file `host.conf.sample` to `host.conf`, modify it as you see fit.
 
   * HOSTNAME is the most important value, the rest can be left as default if you like
   * REDIRECT_HOST determines where someone who visits `yourdomain.com` in a browser will be redirected; recommended configuration is either app.yourdomain.com to go right to the Element interface, or www.yourdomain.com to go to the static website.
