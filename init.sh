@@ -100,9 +100,11 @@ sed -i "s/^  name: sqlite3/  name: psycopg2/" storage/synapse/data/homeserver.ya
 sed -i "s#^    database: /data/homeserver.db#    user: synapse_user\n    password: ${POSTGRES_PW}\n    database: synapse\n    host: database\n    cp_min: 5\n    cp_max: 10#" storage/synapse/data/homeserver.yaml
 
 echo "modifying MAS config to use postgres and connect to synapse"
+sed -i "s#^  issuer: http://\[::\]:8080/##" storage/mas/data/config.yaml
+sed -i "s#^  public_base: http://\[::\]:8080/#  public_base: https://${MAS_HOST}/#" storage/mas/data/config.yaml
 sed -i "s#^  uri: postgresql://#  uri: postgresql://mas_user:${POSTGRES_MAS_PW}@database/mas#" storage/mas/data/config.yaml
 sed -i "s#^  homeserver: localhost:8008#  homeserver: ${HOSTNAME}#" storage/mas/data/config.yaml
-sed -i "s#^  endpoint: http://localhost:8008/#  endpoint: ${MATRIX_HOST}#" storage/mas/data/config.yaml
+sed -i "s#^  endpoint: http://localhost:8008/#  endpoint: https://${MATRIX_HOST}#" storage/mas/data/config.yaml
 MAS_SYNAPSE_SHARED_SECRET=$(grep '  secret: ' ./storage/mas/data/config.yaml | awk '{print $2}' | tr -d '\r')
 sed -i "s/^# vim:ft=yaml//" ./storage/synapse/data/homeserver.yaml
 cat << EOF >> ./storage/synapse/data/homeserver.yaml
