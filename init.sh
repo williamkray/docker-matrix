@@ -115,6 +115,6 @@ matrix_authentication_service:
 EOF
 
 echo "starting everything up..."
-#docker compose up -d
+docker compose up -d
 
 echo "done"
