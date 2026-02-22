@@ -21,6 +21,7 @@ Ensure you have created and modified a `host.conf` file to set some basic values
 >   - postgres `init-db.sh`
 >   - nginx config
 >   - `docker-compose.yml`
+>   - more configs in the storage directory!
 > 
 > If you make changes to any of these files after running `init.sh`, your changes will be lost. This means if you expand
 > on this deployment to add things like synapse workers, matrix-media-repo, additional services, etc. and then re-run
