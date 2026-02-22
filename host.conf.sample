@@ -3,6 +3,8 @@ SYNAPSE_VERSION_TAG=latest
 MAS_VERSION_TAG=latest
 ELEMENT_VERSION_TAG=latest
 POSTGRES_VERSION_TAG=17
+MATRIX_JWT_VERSION_TAG=latest
+LIVEKIT_VERSION_TAG=latest
 
 ## the important bits
 HOSTNAME=example.com
@@ -15,6 +17,7 @@ POSTGRES_ROOT_PW=mysupersecurerootpassword
 SITE_HOST=www.${HOSTNAME}
 MATRIX_HOST=synapse.${HOSTNAME}
 MAS_HOST=mas.${HOSTNAME}
+MATRIX_RTC_HOST=mrtc.${HOSTNAME}
 ELEMENT_HOST=app.${HOSTNAME}
 MAUBOT_HOST=maubot.${HOSTNAME}
 REDIRECT_HOST=${ELEMENT_HOST} ## set to ${SITE_HOST} if you would prefer to redirect to a static site

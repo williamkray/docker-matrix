@@ -128,6 +128,63 @@ services:
       - ./storage/postgresql/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
     expose:
       - 5432
+
+  # matrix-rtc authentication layer
+  jwt:
+    restart: always
+    image: ghcr.io/element-hq/lk-jwt-service:REPLACE_WITH_MATRIX_JWT_VERSION_TAG
+    expose:
+      - 8080
+    networks:
+      traefik:
+        aliases:
+          - jwt
+    environment:
+      - LIVEKIT_JWT_PORT=8080
+      - LIVEKIT_URL=https://REPLACE_WITH_MATRIX_RTC_HOST/livekit/sfu
+      - LIVEKIT_KEY=REPLACE_WITH_LIVEKIT_KEY
+      - LIVEKIT_SECRET=REPLACE_WITH_LIVEKIT_SECRET
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik"
+      - "traefik.http.routers.jwt.entrypoints=websecure"
+      - "traefik.http.routers.jwt.tls.certresolver=le"
+      - "traefik.http.routers.jwt.rule=Host(`REPLACE_WITH_MATRIX_RTC_HOST`) && PathPrefix(`/livekit/jwt`)"
+      - "traefik.http.routers.jwt.service=jwt"
+      - "traefik.http.services.jwt.loadbalancer.server.port=8080"
+      - "traefik.http.routers.jwt.middlewares=jwt-mw"
+      - "traefik.http.middlewares.jwt-mw.stripprefix.prefixes=/livekit/jwt"
+
+  # matrix-rtc SFU
+  livekit:
+    image: livekit/livekit-server:REPLACE_WITH_LIVEKIT_VERSION_TAG
+    command: --config /etc/livekit.yaml
+    expose:
+      - 7880
+    ports:
+      - 7881:7881
+      - 50100-50200:50100-50200/udp
+    restart: always
+    volumes:
+      - ./storage/livekit/data/config.yaml:/etc/livekit.yaml:ro
+    networks:
+      traefik:
+        aliases:
+          - livekit
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik"
+      - "traefik.http.routers.livekit.entrypoints=websecure"
+      - "traefik.http.routers.livekit.tls.certresolver=le"
+      - "traefik.http.services.livekit.loadbalancer.server.port=7880"
+      - "traefik.http.routers.livekit.middlewares=livekit-cors, livekit-prefix"
+      - "traefik.http.routers.livekit.rule=Host(`REPLACE_WITH_MATRIX_RTC_HOST`) && PathPrefix(`/livekit/sfu`)"
+      - 'traefik.http.middlewares.livekit-cors.headers.accesscontrolalloworiginlist="*"'
+      - "traefik.http.middlewares.livekit-cors.headers.accesscontrolallowmethods=POST"
+      - "traefik.http.middlewares.livekit-cors.headers.accesscontrolallowheaders=Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token"
+      - "traefik.http.middlewares.livekit-cors.headers.customrequestheaders.Connection=Upgrade"
+      - "traefik.http.middlewares.livekit-cors.headers.customrequestheaders.Upgrade=WebSocket"
+      - "traefik.http.middlewares.livekit-prefix.stripprefix.prefixes=/livekit/sfu"
   
 # maubot:
 #   image: dock.mau.dev/maubot/maubot:latest

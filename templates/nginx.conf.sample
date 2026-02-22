@@ -15,7 +15,15 @@ server {
 
   location /.well-known/matrix/client {
     default_type application/json;
-    return 200 '{"m.homeserver":{"base_url":"https://REPLACE_WITH_MATRIX_HOST"}}';
+    return 200 '{
+      "m.homeserver": {
+        "base_url": "https://REPLACE_WITH_MATRIX_HOST"
+      },
+      "org.matrix.msc4143.rtc_foci": [{
+        "type": "livekit",
+        "livekit_service_url": "https://REPLACE_WITH_MATRIX_RTC_HOST/livekit/jwt"
+      }]
+    }';
     add_header Access-Control-Allow-Origin  *;
   }
 }
