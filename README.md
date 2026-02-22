@@ -7,26 +7,25 @@ Ensure you have created and modified a `host.conf` file to set some basic values
 
   * Synapse server with PostgreSQL database
   * Matrix Authentication Service (next-gen true OIDC auth layer)
+  * Matrix-RTC (Element-Call) for voice and video calling
   * Element web interface client pre-configured for your Synapse host
   * Traefik for reverse-proxy and TLS termination
   * Maubot for running your own bots!
 
-#### DANGER! WARNING! DANGER!
+> [!NOTE]
+> If you deploy testing servers using a domain you want to use in the future, keep in mind that Matrix considers your matrix hostname to be eternal. It is strongly recommended that you not join federated rooms with a testing server that you might change the host name of, and if you do (in order to test federation presumably) that you LEAVE THOSE ROOMS before tearing down your matrix server and losing all your work. Failure to do so may result in mismatched state of those shared rooms, which means you may never be able to log into them ever again. It's weird.
 
-If you deploy testing servers using a domain you want to use in the future, keep in mind that Matrix considers your matrix hostname to be eternal. It is strongly recommended that you not join federated rooms with a testing server that you might change the host name of, and if you do (in order to test federation presumably) that you LEAVE THOSE ROOMS before tearing down your matrix server and losing all your work. Failure to do so may result in mismatched state of those shared rooms, which means you may never be able to log into them ever again. It's weird.
-
-#### WARNING DANGER WARNING
-
-The `init.sh` script in this repository destructively puts the following files in place:
-  
-  - postgres `init-db.sh`
-  - nginx config
-  - `docker-compose.yml`
-
-If you make changes to any of these files after running `init.sh`, your changes will be lost. This means if you expand
-on this deployment to add things like synapse workers, matrix-media-repo, additional services, etc. and then re-run
-`init.sh` your other services will magically disappear. Either make those changes in the templates used to generate
-these files, or just delete the init.sh script after you run it to be safe!
+> [!WARNING]
+> The `init.sh` script in this repository destructively puts the following files in place:
+>   
+>   - postgres `init-db.sh`
+>   - nginx config
+>   - `docker-compose.yml`
+> 
+> If you make changes to any of these files after running `init.sh`, your changes will be lost. This means if you expand
+> on this deployment to add things like synapse workers, matrix-media-repo, additional services, etc. and then re-run
+> `init.sh` your other services will magically disappear. Either make those changes in the templates used to generate
+> these files, or just delete the init.sh script after you run it to be safe!
 
 To Use:
 -------
