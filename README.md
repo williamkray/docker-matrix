@@ -6,6 +6,8 @@ This repo intends to make it easy to launch a Matrix server, and all the resourc
 Ensure you have created and modified a `host.conf` file to set some basic values, run the `init.sh` script, and you should end up with a reasonably stable, functional group of services:
 
   * Synapse server with PostgreSQL database
+  * Domain delegation (`@user:example.com` usernames, with synapse running at `synapse.example.com`)
+  * Working federation with the broader Matrix network
   * Matrix Authentication Service (next-gen true OIDC auth layer)
   * Matrix-RTC (Element-Call) for voice and video calling
   * Element web interface client pre-configured for your Synapse host
@@ -83,7 +85,7 @@ To Use:
 
   2. Copy or rename the file `host.conf.sample` to `host.conf`, modify it as you see fit.
 
-  * `HOSTNAME` is the most important value, the rest can be left as default if you like. If you change any other host
+  * `HOSTNAME` and postgres passwords are the most important, the rest can be left as default if you like. If you change any other host
     endpoints, make sure they match whatever DNS records you made above!
   * `REDIRECT_HOST` determines where someone who visits `yourdomain.com` in a browser will be redirected; recommended configuration is either `app.yourdomain.com` to go right to the Element interface, or `www.yourdomain.com` to go to the static website.
 
