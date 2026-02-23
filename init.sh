@@ -24,6 +24,10 @@ echo "moving db-init script into place"
 mkdir -p storage/postgresql/
 cp templates/init-db.sh storage/postgresql/init-db.sh
 
+echo "setting up default postgres backup cron job"
+mkdir -p storage/pgbackup/
+cp templates/pgbackup.crontab.sample storage/pgbackup/crontab
+
 echo "adding nginx config file"
 mkdir -p storage/nginx/
 cp templates/nginx.conf.sample storage/nginx/matrix.conf

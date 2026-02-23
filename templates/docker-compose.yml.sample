@@ -129,6 +129,17 @@ services:
     expose:
       - 5432
 
+  pgbackup:
+    build: ./build/bup
+    restart: always
+    networks:
+      - postgres
+    environment:
+      - PGPASSWORD=REPLACE_WITH_POSTGRES_PW
+    volumes:
+      - ./storage/pgbackup/crontab:/var/spool/cron/crontabs/root
+      - ./storage/pgbackup/backups:/backup
+
   # matrix-rtc authentication layer
   jwt:
     restart: always
