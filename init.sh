@@ -28,6 +28,7 @@ echo "adding nginx config file"
 mkdir -p storage/nginx/
 cp templates/nginx.conf.sample storage/nginx/matrix.conf
 sed -i "s/REPLACE_WITH_MATRIX_HOST/$MATRIX_HOST/" storage/nginx/matrix.conf
+sed -i "s/REPLACE_WITH_MATRIX_RTC_HOST/${MATRIX_RTC_HOST}/g" storage/nginx/matrix.conf
 
 echo "generating initial synapse config file for $HOSTNAME"
 docker run --rm -it \
