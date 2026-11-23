@@ -18,3 +18,10 @@ turn:
   external_tls: true
 keys:
   REPLACE_WITH_LIVEKIT_KEY: "REPLACE_WITH_LIVEKIT_SECRET"
+# participant join/leave events for lk-jwt-service, so it can end a user's call membership as soon
+# as they disconnect (delegated delayed leave, MSC4140). api_key must be one of the keys above and
+# match LIVEKIT_KEY of the jwt service: livekit signs the webhooks with it and lk-jwt verifies them.
+webhook:
+  api_key: REPLACE_WITH_LIVEKIT_KEY
+  urls:
+    - https://REPLACE_WITH_MATRIX_RTC_HOST/livekit/jwt/sfu_webhook

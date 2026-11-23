@@ -16,6 +16,9 @@ DB_BACKUP_NTFY_URL=                     ## optional: ntfy topic URL (https://ntf
 STATE_COMPRESSOR_SCHEDULE="30 4 * * *"  ## nightly synapse state compression at 04:30, after the dump
 ROOM_PURGE_AFTER=28d                    ## purge a room this long after every local user has left (and forgotten) it
 
+## matrix-rtc
+MATRIX_RTC_SANITY_CHECK_SECONDS=30      ## how often lk-jwt-service re-checks call participants with livekit, in case a webhook is missed
+
 ## the important bits
 HOSTNAME=example.com
 POSTGRES_PW=mysupersecurepassword

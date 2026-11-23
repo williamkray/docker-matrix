@@ -55,6 +55,11 @@ Important notes about the opinionated deployment strategy:
   any time with `docker compose exec db-dump sh /opt/db-dump/db-dump.sh`. Set `DB_BACKUP_NTFY_URL` to be alerted
   when a dump fails. Upgrading PostgreSQL to a new major version means dump and restore: the `db-dump`
   image has to match the server's major version.
+- Call membership cleanup: livekit sends participant join/leave webhooks to lk-jwt-service, which takes over each
+  caller's delayed "leave" event (MSC4140). Someone who hangs up or closes the tab leaves the call right away, someone
+  whose client crashes or loses network leaves once livekit notices (about 20 seconds), and a throttled background tab
+  doesn't drop out of a call it is still connected to. Both use the public `MATRIX_RTC_HOST` URLs, so livekit and
+  lk-jwt-service can run on different machines.
 - State compression: `synapse-compress-state` runs [synapse_auto_compressor](https://github.com/matrix-org/rust-synapse-compress-state)
   nightly (`STATE_COMPRESSOR_SCHEDULE`, 04:30 by default) to shrink Synapse's room state history, usually its largest
   table. Both schedules are cron format in `TIMEZONE` (UTC by default); all of these are set in `host.conf`, and end up

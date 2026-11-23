@@ -23,6 +23,7 @@ source host.conf
 : "${DB_BACKUP_NTFY_URL:=}"
 : "${STATE_COMPRESSOR_SCHEDULE:=30 4 * * *}"
 : "${ROOM_PURGE_AFTER:=28d}"
+: "${MATRIX_RTC_SANITY_CHECK_SECONDS:=30}"
 
 ## postgres 18 moved its data directory: mounting the parent with an older image would put the
 ## database in an anonymous docker volume instead of ./storage. latest (or any non-number) is 18+.
@@ -131,6 +132,7 @@ sed -i "s|REPLACE_WITH_DB_BACKUP_SCHEDULE|${DB_BACKUP_SCHEDULE}|g" docker-compos
 sed -i "s|REPLACE_WITH_DB_BACKUP_KEEP|${DB_BACKUP_KEEP}|g" docker-compose.yml
 sed -i "s|REPLACE_WITH_DB_BACKUP_NTFY_URL|${DB_BACKUP_NTFY_URL}|g" docker-compose.yml
 sed -i "s|REPLACE_WITH_STATE_COMPRESSOR_SCHEDULE|${STATE_COMPRESSOR_SCHEDULE}|g" docker-compose.yml
+sed -i "s|REPLACE_WITH_MATRIX_RTC_SANITY_CHECK_SECONDS|${MATRIX_RTC_SANITY_CHECK_SECONDS}|g" docker-compose.yml
 
 echo "replacing acme email address"
 sed -i "s/REPLACE_WITH_ACME_EMAIL/${ACME_EMAIL}/g" docker-compose.yml
@@ -251,8 +253,11 @@ livekit_key=$(tr -dc 'a-zA-Z0-9' < /dev/urandom | head -c 10)
 livekit_secret=$(tr -dc 'a-zA-Z0-9' < /dev/urandom | head -c 40)
 
 echo "injecting key/secret into livekit config and docker-compose"
-sed -i "s/REPLACE_WITH_LIVEKIT_KEY/${livekit_key}/" ./storage/livekit/data/config.yaml ./docker-compose.yml
-sed -i "s/REPLACE_WITH_LIVEKIT_SECRET/${livekit_secret}/" ./storage/livekit/data/config.yaml ./docker-compose.yml
+sed -i "s/REPLACE_WITH_LIVEKIT_KEY/${livekit_key}/g" ./storage/livekit/data/config.yaml ./docker-compose.yml
+sed -i "s/REPLACE_WITH_LIVEKIT_SECRET/${livekit_secret}/g" ./storage/livekit/data/config.yaml ./docker-compose.yml
+
+echo "pointing livekit webhooks at lk-jwt-service"
+sed -i "s/REPLACE_WITH_MATRIX_RTC_HOST/${MATRIX_RTC_HOST}/g" ./storage/livekit/data/config.yaml
 
 #echo "starting everything up..."
 #docker compose up -d

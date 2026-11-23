@@ -202,6 +202,8 @@ services:
       - LIVEKIT_URL=wss://REPLACE_WITH_MATRIX_RTC_HOST/livekit/sfu
       - LIVEKIT_KEY=REPLACE_WITH_LIVEKIT_KEY
       - LIVEKIT_SECRET=REPLACE_WITH_LIVEKIT_SECRET
+      # backstop for livekit's webhooks (storage/livekit/data/config.yaml): re-check participants every N seconds
+      - LIVEKIT_SANITY_CHECK_INTERVAL_SECONDS=REPLACE_WITH_MATRIX_RTC_SANITY_CHECK_SECONDS
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefik"
