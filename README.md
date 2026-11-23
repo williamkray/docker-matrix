@@ -9,7 +9,8 @@ Ensure you have created and modified a `host.conf` file to set some basic values
   * Domain delegation (`@user:example.com` usernames, with synapse running at `synapse.example.com`)
   * Working federation with the broader Matrix network
   * Matrix Authentication Service (next-gen true OIDC auth layer)
-  * Matrix-RTC (Element-Call) for voice and video calling
+  * Matrix-RTC (Element-Call) for voice and video calling, with lk-jwt-service running as a Synapse application service
+  * Nightly PostgreSQL backups (verified logical dumps, last 7 kept) and nightly Synapse state compression
   * Element web interface client pre-configured for your Synapse host
   * Traefik for reverse-proxy and TLS termination
   * Maubot for running your own bots!
@@ -48,8 +49,20 @@ Important notes about the opinionated deployment strategy:
 - Default containers used are generally `latest` labels, but for stability it is recommended that you change these in
   your docker-compose.yml to reflect static versions, and upgrade them intentionally. I'm not responsible for your
   auto-update processes breaking everything.
-- Database backups are not included, it's up to you to add this. I'm not your mother. I do, however, have plans to
-  include a backup and restore process.
+- Database backups: the `db-dump` container dumps every database nightly (`DB_BACKUP_SCHEDULE`, 03:00 by default)
+  into `storage/backups/postgresql`, reads each dump back to verify it, and keeps the last `DB_BACKUP_KEEP` (7). That's a local copy only: still get it off the server
+  (rsync, restic, S3, whatever you like). Restore steps are at the top of `storage/db-dump/db-dump.sh`; run a dump
+  any time with `docker compose exec db-dump sh /opt/db-dump/db-dump.sh`. Set `DB_BACKUP_NTFY_URL` to be alerted
+  when a dump fails. Upgrading PostgreSQL to a new major version means dump and restore: the `db-dump`
+  image has to match the server's major version.
+- State compression: `synapse-compress-state` runs [synapse_auto_compressor](https://github.com/matrix-org/rust-synapse-compress-state)
+  nightly (`STATE_COMPRESSOR_SCHEDULE`, 04:30 by default) to shrink Synapse's room state history, usually its largest
+  table. Both schedules are cron format in `TIMEZONE` (UTC by default); all of these are set in `host.conf`, and end up
+  as plain values in `docker-compose.yml` that you can change there later.
+- Room cleanup: Synapse is configured to forget rooms users leave and to purge a room from the database 28 days after
+  every local user has forgotten it (`forget_rooms_on_leave`, and `forgotten_room_retention_period` set from
+  `ROOM_PURGE_AFTER`). Without this, big
+  public rooms you have left keep taking up space forever.
 
 > [!NOTE]
 > If you deploy testing servers using a domain you want to use in the future, keep in mind that Matrix considers your matrix hostname to be eternal. It is strongly recommended that you not join federated rooms with a testing server that you might change the host name of, and if you do (in order to test federation presumably) that you LEAVE THOSE ROOMS before tearing down your matrix server and losing all your work. Failure to do so may result in mismatched state of those shared rooms, which means you may never be able to log into them ever again. It's weird.
@@ -66,6 +79,10 @@ Important notes about the opinionated deployment strategy:
 > on this deployment to add things like synapse workers, matrix-media-repo, additional services, etc. and then re-run
 > `init.sh` your other services will magically disappear. Either make those changes in the templates used to generate
 > these files, or just delete the init.sh script after you run it to be safe!
+>
+> As a safety net, `init.sh` refuses to run if it finds an existing deployment (`docker-compose.yml`, or Synapse, MAS
+> or PostgreSQL data under `storage/`). To really start over, `docker compose down` and move `storage/` and
+> `docker-compose.yml` out of the way first. That throws away your server, including its database.
 
 To Use:
 -------

@@ -1,0 +1,18 @@
+# lk-jwt-service as a Synapse application service (MSC4502 room-membership lookups + MSC4512
+# proxying). Synapse forwards /_matrix/{client,federation}/<ver>/rtc/livekit/* to proxy_url + the
+# same path; Traefik strips /livekit/jwt before it reaches the jwt container. Running lk-jwt-service
+# without an application service is deprecated upstream.
+id: lk-jwt-service
+url: null
+as_token: REPLACE_WITH_LK_JWT_AS_TOKEN
+hs_token: REPLACE_WITH_LK_JWT_HS_TOKEN
+sender_localpart: _lk_jwt_service
+rate_limited: false
+namespaces:
+  users:
+    - exclusive: false
+      regex: .*
+io.element.msc4502.scopes:
+  - urn:matrix:client:io.element.msc4502:rooms:is_joined
+io.element.msc4512.proxy_prefix: rtc/livekit
+io.element.msc4512.proxy_url: https://REPLACE_WITH_MATRIX_RTC_HOST/livekit/jwt

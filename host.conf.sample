@@ -2,9 +2,19 @@
 SYNAPSE_VERSION_TAG=latest
 MAS_VERSION_TAG=latest
 ELEMENT_VERSION_TAG=latest
-POSTGRES_VERSION_TAG=17
+POSTGRES_VERSION_TAG=18 ## the backup container uses the same version (<tag>-alpine)
 MATRIX_JWT_VERSION_TAG=latest
 LIVEKIT_VERSION_TAG=latest
+## matrix-org/rust-synapse-compress-state image; its tags are git commits of that repo (or latest)
+COMPRESSOR_VERSION_TAG=6a1327941c3e31cbd783b5c235201cdcbc69a689
+
+## backups and maintenance (schedules are cron format, in TIMEZONE)
+TIMEZONE=UTC                            ## e.g. America/New_York, Europe/Berlin (see /usr/share/zoneinfo)
+DB_BACKUP_SCHEDULE="0 3 * * *"          ## nightly database dumps at 03:00
+DB_BACKUP_KEEP=7                        ## how many dumps to keep in storage/backups/postgresql
+DB_BACKUP_NTFY_URL=                     ## optional: ntfy topic URL (https://ntfy.sh/...) alerted when a dump fails
+STATE_COMPRESSOR_SCHEDULE="30 4 * * *"  ## nightly synapse state compression at 04:30, after the dump
+ROOM_PURGE_AFTER=28d                    ## purge a room this long after every local user has left (and forgotten) it
 
 ## the important bits
 HOSTNAME=example.com

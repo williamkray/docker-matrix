@@ -124,12 +124,65 @@ services:
     environment:
       - POSTGRES_PASSWORD=REPLACE_WITH_POSTGRES_ROOT_PW
     volumes:
-      - ./storage/postgresql/data:/var/lib/postgresql/data
+      # PostgreSQL 18+ mounts /var/lib/postgresql (data in ./storage/postgresql/data/<major>/docker);
+      # older versions mount /var/lib/postgresql/data directly
+      - ./storage/postgresql/data:REPLACE_WITH_POSTGRES_DATA_PATH
       - ./storage/postgresql/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
     expose:
       - 5432
 
-  # matrix-rtc authentication layer
+  # nightly logical backups of all databases into ./storage/backups/postgresql.
+  # DUMP_SCHEDULE is cron format in TZ; change values here, then `docker compose up -d db-dump`.
+  # Restore steps are at the top of ./storage/db-dump/db-dump.sh. Run one now with:
+  #   docker compose exec db-dump sh /opt/db-dump/db-dump.sh
+  db-dump:
+    image: postgres:REPLACE_WITH_DB_DUMP_IMAGE_TAG
+    restart: always
+    init: true   # crond ignores SIGTERM as PID 1; without this every stop waits out the 10s timeout
+    depends_on:
+      - postgresql
+    networks:
+      - postgres
+    environment:
+      - TZ=REPLACE_WITH_TIMEZONE
+      - DUMP_NAME=REPLACE_WITH_HOSTNAME
+      - DUMP_SCHEDULE=REPLACE_WITH_DB_BACKUP_SCHEDULE
+      - KEEP_DUMPS=REPLACE_WITH_DB_BACKUP_KEEP
+      - PGHOST=database
+      - PGUSER=postgres
+      - PGPASSWORD=REPLACE_WITH_POSTGRES_ROOT_PW
+      # optional: full ntfy topic URL (e.g. https://ntfy.sh/your-secret-topic) to be alerted on failure
+      - BACKUP_NTFY_URL=REPLACE_WITH_DB_BACKUP_NTFY_URL
+    volumes:
+      - ./storage/backups/postgresql:/dumps
+      - ./storage/db-dump:/opt/db-dump:ro
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        echo "$$DUMP_SCHEDULE sh /opt/db-dump/db-dump.sh > /proc/1/fd/1 2>&1" > /etc/crontabs/root
+        exec crond -f -l 8
+
+  # nightly synapse state compression (shrinks state_groups_state, Synapse's largest table).
+  # COMPRESS_SCHEDULE is cron format in TZ; change it here, then `docker compose up -d synapse-compress-state`.
+  # The compressor version is the FROM tag in ./storage/statecompressor/Dockerfile (then `up -d --build`).
+  synapse-compress-state:
+    build: ./storage/statecompressor
+    restart: always
+    init: true
+    depends_on:
+      - postgresql
+    networks:
+      - postgres
+    environment:
+      - POSTGRES_USER=synapse_user
+      - POSTGRES_PASSWORD=REPLACE_WITH_POSTGRES_PW
+      - POSTGRES_DB=synapse
+      - POSTGRES_HOST=database
+      - TZ=REPLACE_WITH_TIMEZONE
+      - COMPRESS_SCHEDULE=REPLACE_WITH_STATE_COMPRESSOR_SCHEDULE
+
+  # matrix-rtc authentication layer, running as a Synapse application service
+  # (registration: ./storage/synapse/data/lk-jwt-registration.yaml)
   jwt:
     restart: always
     image: ghcr.io/element-hq/lk-jwt-service:REPLACE_WITH_MATRIX_JWT_VERSION_TAG
@@ -140,8 +193,13 @@ services:
         aliases:
           - jwt
     environment:
-      - LIVEKIT_JWT_PORT=8080
-      - LIVEKIT_URL=https://REPLACE_WITH_MATRIX_RTC_HOST/livekit/sfu
+      - LIVEKIT_HS_SERVER_NAME=REPLACE_WITH_HOSTNAME
+      - LIVEKIT_AS_TOKEN=REPLACE_WITH_LK_JWT_AS_TOKEN
+      - LIVEKIT_HS_TOKEN=REPLACE_WITH_LK_JWT_HS_TOKEN
+      # only used by the deprecated standalone endpoints that older clients still call
+      - LIVEKIT_FULL_ACCESS_HOMESERVERS=REPLACE_WITH_HOSTNAME
+      # must equal the transport url Synapse advertises (matrix_rtc in homeserver.yaml)
+      - LIVEKIT_URL=wss://REPLACE_WITH_MATRIX_RTC_HOST/livekit/sfu
       - LIVEKIT_KEY=REPLACE_WITH_LIVEKIT_KEY
       - LIVEKIT_SECRET=REPLACE_WITH_LIVEKIT_SECRET
     labels:
